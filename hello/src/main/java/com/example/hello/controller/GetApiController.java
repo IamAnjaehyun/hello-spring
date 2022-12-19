@@ -2,6 +2,8 @@ package com.example.hello.controller;
 
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/get")
 public class GetApiController {
@@ -25,4 +27,27 @@ public class GetApiController {
 
     }
 
+
+    // search?q = intellij
+    // &oq = intellij
+    // &aqs = chrome..69i57j0i131i433i512j0i512l8.2540j0j7
+    // &sourceid = chrome
+    // &ie = UTF-8
+    // ?key = values&key2=value2
+
+    //http://localhost:8080/api/get/query-param?user=steve&email=steve@gmail.com&age=30
+    @GetMapping(path = "query-param")
+    public String queryParam(@RequestParam Map<String, String> queryParam){
+        //데이터가 키밸류 키밸류 라서 맵
+        StringBuilder sb =new StringBuilder();
+
+        queryParam.entrySet().forEach(entry ->{
+                System.out.println(entry.getKey());
+                System.out.println(entry.getValue());
+                System.out.println("\n");
+
+                sb.append(entry.getKey()+ " = " +entry.getValue()+"\n");
+                });
+        return sb.toString();
+    }
 }
