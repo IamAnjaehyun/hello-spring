@@ -1,6 +1,6 @@
 package com.example.hello.dto;
 
-public class userRequest {
+public class UserRequest {
     private String name;
     private String email;
     private int age;
@@ -27,5 +27,14 @@ public class userRequest {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return "UserRequest{" +
+                "name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", age=" + age +
+                '}';
     }
 }
