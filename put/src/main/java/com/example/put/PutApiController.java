@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class PutApiController {
 
     @PutMapping("/put")
-    public void put(@RequestBody PostRequestDto requestDto){
+    public PostRequestDto put(@RequestBody PostRequestDto requestDto){
         System.out.println(requestDto);
+        return requestDto;
     }
 }
