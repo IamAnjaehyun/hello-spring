@@ -27,6 +27,11 @@ public class RestApiController {
         //db logic 1~2초정도 걸린다 생각
         Thread.sleep(1000*2);
     }
-
+    @Decode
+    @PutMapping("/put")
+    public User put(@RequestBody User user){
+        System.out.println("put method : "+ user);
+        return user;
+    }
 
 }
