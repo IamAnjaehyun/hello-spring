@@ -57,6 +57,6 @@ public class Main {
         objectNode.put("name", "steve"); //이름 바꾸기
         objectNode.put("age", 20); //나이 바꾸기
 
-        System.out.println(objectNode.toPrettyString()); //예쁘게 출력해서 프리티스트링
+        System.out.println(objectNode.toPrettyString()); //예쁘게 출력해서 toPrettyString
     }
 }
