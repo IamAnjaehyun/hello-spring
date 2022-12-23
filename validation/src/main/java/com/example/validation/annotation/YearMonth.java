@@ -21,5 +21,5 @@ public @interface YearMonth {
 
     Class<? extends Payload>[] payload() default {  };
 
-    String pattern() default "yyyyMMdd"; //사용자가 default 설정 안하면 이게 기의
+    String pattern() default "yyyyMMdd"; //사용자가 default 설정 안하면 이게 기본 메세지
 }
