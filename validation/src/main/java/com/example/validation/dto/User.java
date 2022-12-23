@@ -1,5 +1,7 @@
 package com.example.validation.dto;
 
+import com.example.validation.annotation.YearMonth;
+
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -14,7 +16,7 @@ public class User {
     private String email;
     @Pattern(regexp = "^\\d{2,3}-\\d{3,4}-\\d{4}$", message = "핸드폰 번호의 양식과 맞지 않습니다. 01x-xxx(x)-xxxx")
     private String phoneNumber;
-    @Size(min = 6, max = 6)
+    @YearMonth
     private String reqYearMonth; //yyyymm
 
     public String getReqYearMonth() {
@@ -55,18 +57,6 @@ public class User {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-
-    @AssertTrue(message = "yyyyMM의 형식에 맞지 않습니다.")
-    public boolean isReqYearMonthValidation() { //boolean 메서드는 이름에 is 로 시작해야한다
-        System.out.println("assertTrue 돌아간다");
-        try {
-            LocalDate localDate = LocalDate.parse(getReqYearMonth() + "01", DateTimeFormatter.ofPattern("yyyyMMdd"));
-            //localdate는 dd까지 들어가있어서 dd 임의로 만들어줌 01로
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
     }
 
     @Override
