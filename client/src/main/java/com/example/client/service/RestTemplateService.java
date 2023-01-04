@@ -1,7 +1,11 @@
 package com.example.client.service;
 
+import com.example.client.dto.Req;
 import com.example.client.dto.UserRequest;
 import com.example.client.dto.UserResponse;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -14,12 +18,12 @@ public class RestTemplateService {
 
     //http://localhost:9090/api/server/hello
     //response
-    public UserResponse hello(){
+    public UserResponse hello() {
         URI uri = UriComponentsBuilder
                 .fromUriString("http://localhost:9090")
                 .path("/api/server/hello")
-                .queryParam("name","aaaa")
-                .queryParam("age",99)
+                .queryParam("name", "aaaa")
+                .queryParam("age", 99)
                 .encode()
                 .build()
                 .toUri();
@@ -28,7 +32,7 @@ public class RestTemplateService {
         RestTemplate restTemplate = new RestTemplate();
         //여기에 있는 GET은 http method의 GET이고 entity로 가져오겠다 이다!!! (가져오다의 GET이 아님)
 //        String result = restTemplate.getForObject(uri, String.class); //uri에 요청을 시키고 문자열로 받음 실행되면 client -> server 붙음
-        ResponseEntity<UserResponse> result= restTemplate.getForEntity(uri, UserResponse.class); //json 받기 위함
+        ResponseEntity<UserResponse> result = restTemplate.getForEntity(uri, UserResponse.class); //json 받기 위함
 
         System.out.println(result.getStatusCode()); //200OK
         System.out.println(result.getBody()); //hello server
@@ -36,7 +40,7 @@ public class RestTemplateService {
         return result.getBody();
     }
 
-    public UserResponse post(){
+    public UserResponse post() {
         //http://localhost:9090/api/server/user/{userId}/name/{userName} (실제주소는 안이럼)
         URI uri = UriComponentsBuilder
                 .fromUriString("http://localhost:9090")
@@ -62,5 +66,76 @@ public class RestTemplateService {
         System.out.println(response.getBody());
 
         return response.getBody();
+    }
+
+    public UserResponse exchange() {
+        URI uri = UriComponentsBuilder
+                .fromUriString("http://localhost:9090")
+                .path("/api/server/user/{userId}/name/{userName}")
+                .encode()
+                .build()
+                .expand(100, "anjh") //순서대로 들어감
+                .toUri();
+
+        System.out.println(uri);
+        //주소 만들고 바디데이터 오브젝트로 만들면 오브젝트 매퍼가 json으로 바꿔주고 resttemplate 가 httpbody에 json으로 쏜다
+        //http body -> object만 보냄 -> object mapper -> json > rest template -> http body json
+        UserRequest req = new UserRequest();
+        req.setName("anjh");
+        req.setAge(10);
+
+        RequestEntity<UserRequest> requestEntity = RequestEntity
+                .post(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("x-authorization", "abcd") //앞에꺼에 뒤를 보냄
+                .header("custom-header", "fffff")
+                .body(req);
+
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<UserResponse> response = restTemplate.exchange(requestEntity, UserResponse.class);
+        return response.getBody();
+    }
+
+
+    public Req<UserResponse> genericExchange() {
+        URI uri = UriComponentsBuilder
+                .fromUriString("http://localhost:9090")
+                .path("/api/server/user/{userId}/name/{userName}")
+                .encode()
+                .build()
+                .expand(100, "anjh") //순서대로 들어감
+                .toUri();
+
+        System.out.println(uri);
+        //주소 만들고 바디데이터 오브젝트로 만들면 오브젝트 매퍼가 json으로 바꿔주고 resttemplate 가 httpbody에 json으로 쏜다
+        //http body -> object만 보냄 -> object mapper -> json > rest template -> http body json
+        UserRequest userRequest = new UserRequest();
+        userRequest.setName("anjh");
+        userRequest.setAge(10);
+
+        Req<UserRequest> req = new Req<UserRequest>();
+        req.setHeader(
+                new Req.Header()
+        );
+
+        req.setResBody(
+                userRequest
+        );
+
+
+        RequestEntity<Req<UserRequest>> requestEntity = RequestEntity
+                .post(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("x-authorization", "abcd") //앞에꺼에 뒤를 보냄
+                .header("custom-header", "fffff")
+                .body(req);
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        ResponseEntity<Req<UserResponse>> response
+                = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<>() {});
+
+        return response.getBody(); //ResponseEntity 의 body 하나 Req의 body 하나
     }
 }
